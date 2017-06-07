@@ -4,32 +4,15 @@ require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
-$isLogged = FALSE;
 $isSetId = FALSE;
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['getUserId'])
         && !empty($_GET['getUsername'])) {
     
     $isSetId = TRUE;
-    $_SESSION['getUserId'] = $_GET['getUserId'];
-    $_SESSION['getUsername'] = $_GET['getUsername'];
-    
-}
-
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-} else {
-        header("Location: ../log/logIn.php");
+    $user2 = Users::loadUserById($conn, $_GET['getUserId']);
 }
 
 ?>
@@ -59,11 +42,16 @@ if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
                     <label for="">Page 
                         <?php  
                         if ($isSetId) {
-                            echo $_SESSION['getUsername']; 
+                            echo $user2->getUsername(); 
                         }
                         ?></label>
                 </div>                
-                <button type="submit" value="sendMessage" class="btn btn-success">Send Message to this User</button>
+                <button type="submit" name="id" class="btn btn-success" 
+                    <?php  
+                    if ($isSetId) {
+                        echo 'value=' . $user2->getId(); 
+                    }
+                    ?>>Send Message to this User</button>
             </form>
            
                 <form action="../log/logOut.php" method="post" role="form">
@@ -77,7 +65,7 @@ if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
             <?php
 
             if ($isLogged && $isSetId) {
-                $tweetsTable = Tweet::loadAllTweetsByUserId($conn, $_SESSION['getUserId']);
+                $tweetsTable = Tweet::loadAllTweetsByUserId($conn, $user2->getId());
                 foreach ($tweetsTable as $value) {
                     $id = $value ->getId();
                     $userId = $value ->getUserId();

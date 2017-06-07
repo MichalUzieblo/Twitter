@@ -6,22 +6,7 @@ require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
 require_once dirname(__FILE__) . "/../../classes/Message.php";
-
-$isLogged = FALSE;
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-} else {
-        header("Location: ../log/logIn.php");
-}
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 ?>
 

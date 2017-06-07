@@ -4,8 +4,7 @@ require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
-
-$isLogged = FALSE;
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['postId'])) {
     
@@ -13,35 +12,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['postId'])) {
     $postId = $_GET['postId'];
 }
 
-if (!empty($_SESSION['hashed_password'] && !empty($_SESSION['password']))) {
-     
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-    $postId = $_SESSION['postId'];
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-}  else {
-        header("Location: ../log/logIn.php");
-}
-
 $switch = 0;
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text']) && $isLogged) {
     
     $newText = trim($_POST['text']);
-    $newPostId = $_SESSION['postId'];
-    $newUserId = $_SESSION['id'];
-    
+    $postId = $_SESSION['postId'];
     
     if (!empty($_POST['text'])) {
         $comment = new Comment();
         $comment ->setCreationDate();
-        $comment ->setPostId($conn, $newPostId);
-        $comment ->setUserId($conn, $newUserId);
+        $comment ->setPostId($conn, $postId);
+        $comment ->setUserId($conn, $id);
         $isExist = $comment ->setText($newText);
         
         if ($isExist == null) {

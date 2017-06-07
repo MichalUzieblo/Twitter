@@ -1,6 +1,5 @@
 <?php
 session_start();
-ob_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['logOut'])) {    
     
@@ -8,19 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['logOut'])) {
     
     if ($logOut == 'logOut') {        
         unset ($_SESSION['id']);
-        unset ($_SESSION['email']);
-        unset ($_SESSION['username']);
-        unset ($_SESSION['password']);
-        unset ($_SESSION['hashed_password']);
-        unset ($_SESSION['postId']);
-        unset ($_SESSION['getUserId']);
-        unset ($_SESSION['getUsername']);
+        unset ($_SESSION['postId']);        
+        unset ($_SESSION['user2id']); 
         $_SESSION['logOut'] = $logOut;
         header("Location: ../../../index.php");        
     } 
 }
 
-ob_end_flush();
 ?>
 
 <!doctype html>

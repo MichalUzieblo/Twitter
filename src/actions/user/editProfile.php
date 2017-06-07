@@ -1,31 +1,9 @@
 <?php
 session_start();
-ob_start();
 
 require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
-
-$isLogged = FALSE;
-
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])
-        && !empty($_SESSION['username']) && !empty($_SESSION['email'])
-        && is_numeric($_SESSION['id']) && !empty($_SESSION['id'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-    $id = $_SESSION['id'];
-    $username = $_SESSION['username'];
-    $email = $_SESSION['email'];
-    
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-}  else {
-    header("Location: ../log/logIn.php");
-}
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 $switch = 0;
 
@@ -52,10 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
                 $switch = 1;
             } else {
                 $_SESSION['id'] = $editUser ->getId();
-                $_SESSION['email'] = $editUser ->getEmail();
-                $_SESSION['username'] = $editUser ->getUsername();
-                $_SESSION['password'] = $newPassword;
-                $_SESSION['hashed_password'] = $editUser ->getPassword();
                 header("Location: ../board/userBoard.php");
             }
         } else {
@@ -66,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
         $switch = 3;        
     } 
 } 
-ob_end_flush();
 
 $conn->close();
 $conn = null;
@@ -104,18 +77,18 @@ $conn = null;
             }
             ?>
             <form action="" method="post" role="form">
-                <legend>Hello <?php echo $username; ?></legend>
+                <legend>Hello <?php echo $user->getUsername(); ?></legend>
                 <div class="form-group">
                     <label for="">New Username</label>
 <!--                    TO DO Docelowo zmienic type na email-->
                     <input type="text" class="form-control" name="username" id="email"
-                           value='<?php echo $username; ?>'>
+                           value='<?php echo $user->getUsername(); ?>'>
                 </div>
                 <div class="form-group">
                     <label for="">New E-mail</label>
 <!--                    TO DO Docelowo zmienic type na email-->
                     <input type="email" class="form-control" name="email" id="email"
-                           value='<?php echo $email; ?>'>
+                           value='<?php echo $user->getEmail(); ?>'>
                 </div>
                 <div class="form-group">
                     <label for="">New password</label>

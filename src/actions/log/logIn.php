@@ -1,10 +1,11 @@
 <?php
 
 session_start();
-ob_start();
 
 require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
+
+unset ($_SESSION['id']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
         && isset($_POST['password'])) {
@@ -24,10 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
             
             if ($checkPassword) {
                 $_SESSION['id'] = $row['id'];
-                $_SESSION['email'] = $row['email'];
-                $_SESSION['username'] = $row['username'];
-                $_SESSION['password'] = $password;
-                $_SESSION['hashed_password'] = $row['hashed_password'];
                 unset ($_SESSION['logOut']);
                 header("Location: ../board/mainBoard.php");
 
@@ -51,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
     $badPass = 'noData';
 
 } 
-ob_end_flush();
+
 ?>
 
 <!doctype html>

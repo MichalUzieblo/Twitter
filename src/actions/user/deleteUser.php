@@ -1,31 +1,9 @@
 <?php
 session_start();
-ob_start();
 
 require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
-
-$isLogged = FALSE;
-
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])
-        && !empty($_SESSION['username']) && !empty($_SESSION['email'])
-        && is_numeric($_SESSION['id']) && !empty($_SESSION['id'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-    $id = $_SESSION['id'];
-    $username = $_SESSION['username'];
-    $email = $_SESSION['email'];
-    
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-}  else {
-    header("Location: ../log/logIn.php");
-}
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteUser'])) {
     
@@ -33,20 +11,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteUser'])) {
         
         $deleteUser = trim($_POST['deleteUser']);        
         
-        if (Users::loadUserById($conn, $id)) {
-            $loadedUser = Users::loadUserById($conn, $id);
-        } else {
-            header("Location: ../log/logIn.php");
-        }
-        
         switch ($deleteUser) {
             case 'no':
                 header("Location: ../board/userBoard.php");
                 break;
             case 'yes':
-                $loadedUser ->delete($conn);
-                header("Location: ../../../index.php");
-                                
+                echo $user->getId();
+                if ($user->delete($conn)) {
+                    header("Location: ../../../index.php");
+                } else {
+                    echo 'nie udalo sie';
+                }
+                
                 break;                
         }
         
@@ -54,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteUser'])) {
         echo 'Spróbuj jeszcze raz';
     } 
 } 
-ob_end_flush();
 
 $conn->close();
 $conn = null;
@@ -79,7 +54,7 @@ $conn = null;
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
             <form action="" method="post" role="form">
-                <legend>Are you sure <?php echo $username . ' ?'; ?></legend>
+                <legend>Are you sure <?php echo $user->getUsername() . ' ?'; ?></legend>
                 <button type="submit" value="yes" name="deleteUser" class="btn btn-success">Yes</button>
                 <button type="submit" value="no" name="deleteUser" class="btn btn-success">No</button>  
             </form>

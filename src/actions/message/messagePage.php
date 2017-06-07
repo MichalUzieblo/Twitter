@@ -5,27 +5,7 @@ require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
 require_once dirname(__FILE__) . "/../../classes/Message.php";
-
-$isLogged = FALSE;
-
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])
-        && isset($_SESSION['id']) && is_numeric($_SESSION['id'])
-        && !empty($_SESSION['username'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-        $userId = $_SESSION['id'];
-        $username = $_SESSION['username'];
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-} else {
-        header("Location: ../log/logIn.php");
-}
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 ?>
 
@@ -66,7 +46,7 @@ if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])
 
             if ($isLogged) {
                 
-                $sendMessageTable = Message::loadAllSendMessageByUserId($conn, $userId);
+                $sendMessageTable = Message::loadAllSendMessageByUserId($conn, $user->getId());
                 echo '<h4>Send: </h4>';
                 foreach ($sendMessageTable as $value) {
                     $messageId = $value ->getId();
@@ -92,7 +72,7 @@ if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])
                     }
                 }
                 
-                $receivedMessageTable = Message::loadAllReceiveMessageByUserId($conn, $userId);
+                $receivedMessageTable = Message::loadAllReceiveMessageByUserId($conn, $user->getId());
                 echo '<h4>Received: </h4>';
                 foreach ($receivedMessageTable as $value) {
                     $messageId = $value ->getId();

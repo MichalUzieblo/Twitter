@@ -3,32 +3,17 @@ session_start();
 require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
-
-$isLogged = FALSE;
-
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-} else {
-    header("Location: ../log/logIn.php");
-}
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 $switch = 0;
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     
     $text = trim($_POST['text']); 
     
     if (!empty($_POST['text'])) {
         $tweet = new Tweet();
-        $tweet ->setUserId($conn, $_SESSION['id']);
+        $tweet ->setUserId($conn, $id);
         $tweet ->setCreationDate();
         $isExist = $tweet ->setText($text);
         
@@ -79,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
                 <button type="submit" value="userBoard" name="userBoard" class="btn btn-success">
                     <?php 
                     if ($isLogged) {
-                        echo $_SESSION['username'] . ' - profile';
+                        echo $user->getUsername() . ' - profile';
                     }
                     ?>
                 </button>
@@ -90,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
                     <label for="">What's up 
                         <?php 
                         if ($isLogged) {
-                            echo $_SESSION['username'] . '?'; 
+                            echo $user->getUsername() . '?'; 
                         }
                         ?></label>
                     <input type="text" class="form-control" name="text" id="name"

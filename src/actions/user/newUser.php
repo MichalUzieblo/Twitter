@@ -1,6 +1,5 @@
 <?php
 session_start();
-ob_start();
 
 require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
@@ -30,10 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
                 $switch = 1;
             } else {             
                 $_SESSION['id'] = $newUser ->getId();
-                $_SESSION['email'] = $newUser ->getEmail();
-                $_SESSION['username'] = $newUser ->getUsername();
-                $_SESSION['password'] = $password;
-                $_SESSION['hashed_password'] = $newUser ->getPassword();
                 header("Location: ../board/mainBoard.php");
             }            
         } else {
@@ -43,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
         $switch = 3;        
     } 
 } 
-ob_end_flush();
 
 $conn->close();
 $conn = null;

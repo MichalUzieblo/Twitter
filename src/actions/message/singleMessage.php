@@ -5,8 +5,8 @@ require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
 require_once dirname(__FILE__) . "/../../classes/Message.php";
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
-$isLogged = FALSE;
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['messageId']) 
         && is_numeric($_GET['messageId']) && !empty($_GET['status'])
@@ -15,21 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['messageId'])
     $messageId = $_GET['messageId'];
     $status = $_GET['status'];
     $user = $_GET['user'];
-}
-
-if (!empty($_SESSION['hashed_password'] && !empty($_SESSION['password']))) {
-     
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-}  else {
-        header("Location: ../log/logIn.php");
 }
 
 ?>

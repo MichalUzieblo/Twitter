@@ -5,50 +5,40 @@ require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
 require_once dirname(__FILE__) . "/../../classes/Message.php";
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
-$isLogged = FALSE;
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['id']) && !empty($_SESSION['id'])) {
     
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-} else {
-        header("Location: ../log/logIn.php");
-}
-
-ob_start();
-$isAllData = FALSE;
-if (!empty($_SESSION['getUserId']) && !empty($_SESSION['id'])) {
-    $isAllData = TRUE;
+    $_SESSION['user2id'] = $_POST['id'];
     
-    if ($_SESSION['getUserId'] == $_SESSION['id']) {
+    if ($_POST['id'] == $_SESSION['id']) {        
         header("Location: errorMessage.php");
     }
 }
-ob_end_flush();
 
 $isSend = FALSE;
+$isError = FALSE;
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message']) && $isLogged
-        && $isAllData) {
+        && isset($_SESSION['user2id'])) {
     
     $text = trim($_POST['message']);
-    $messageReceiverId = $_SESSION['getUserId'];
+    $messageReceiverId = $_SESSION['user2id']; 
     $messageSenderId = $_SESSION['id'];
         
-    if (!empty($_POST['message'])) {
+    if (!empty($_POST['message']) && !empty($_SESSION['user2id'])) {
         $message = new Message();
         $message ->setCreationDate();
         $message ->setMessageReceiverId($conn, $messageReceiverId);
         $message ->setMessageSenderId($conn, $messageSenderId);
-        $message ->setText($text);
-        $message ->saveToDB($conn);
-        $isSend = TRUE;
+        if ($message ->setText($text) == NULL) {
+            $isError = TRUE;
+        } else {
+            if ($message ->saveToDB($conn) === TRUE) {
+                $isSend = TRUE;
+            }
+            $isError = TRUE;
+        }
+        
     } 
 }
 
@@ -81,6 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message']) && $isLogge
                 echo 'Wysłano';
                 $conn->close();
                 $conn = null;
+            } elseif ($isError) {
+                echo 'za długi text';
             }
                         
             ?>

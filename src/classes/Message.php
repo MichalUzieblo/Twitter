@@ -29,7 +29,7 @@ class Message {
     }
     
     public function setMessageSenderId(mysqli $connection, $messageSenderId) {        
-        $sql="SELECT id FROM Tweet WHERE id=$messageSenderId"; 
+        $sql="SELECT id FROM Users WHERE id=$messageSenderId"; 
         $result = $connection->query($sql);
         if($result->num_rows == 0) {
             return NULL;

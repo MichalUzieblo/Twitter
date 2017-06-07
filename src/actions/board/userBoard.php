@@ -4,23 +4,7 @@ require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
 require_once dirname(__FILE__) . "/../../classes/Tweet.php";
 require_once dirname(__FILE__) . "/../../classes/Comment.php";
-
-$isLogged = FALSE;
-
-if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
-    
-    $hashed_password = $_SESSION['hashed_password'];
-    $password = $_SESSION['password'];
-    $checkPassword = password_verify($password, $hashed_password);
-
-    if ($checkPassword) {
-        $isLogged = TRUE;
-    } else {
-        header("Location: ../log/logIn.php");
-    }
-} else {
-        header("Location: ../log/logIn.php");
-}
+require_once dirname(__FILE__) . "/../log/isLogged.php";
 
 ?>
 
@@ -46,7 +30,7 @@ if (!empty($_SESSION['hashed_password']) && !empty($_SESSION['password'])) {
             <center>
             <form action="../user/editProfile.php" method="post" role="form">
                 <div class="form-group">
-                    <label for="">Hello <?php echo $_SESSION['username']; ?></label>
+                    <label for="">Hello <?php echo $user->getUsername(); ?></label>
                 </div>                
                 <button type="submit" value="editProfile" class="btn btn-success">Edit profile</button>
             </form>
