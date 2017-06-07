@@ -42,68 +42,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message']) && $isLogge
     } 
 }
 
+$title = 'Twitter - Send Message';
+require_once dirname(__FILE__) . "/../../html/htmlHeader.php";
 ?>
+            
+<center>
+<?php
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Twitter - Send Message</title>
-    <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container">
-    <div class="row">
-        
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            
-        </div>
-        
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            
-            <center>
-            <?php
-            
-            if ($isSend) {
-                echo 'Wysłano';
-                $conn->close();
-                $conn = null;
-            } elseif ($isError) {
-                echo 'za długi text';
-            }
-                        
-            ?>
-            <form action="" method="post" role="form">
-                <div class="form-group">
-                    <label for="">Message</label>
-                    <input type="text" class="form-control" name="message" id="message"
-                           placeholder="Message max 140 signs">
-                </div>
-                
-                <button type="submit" value="send" class="btn btn-success">Send</button>
-            </form>           
-                       
-                <form action="../log/logOut.php" method="post" role="form">
-                <button type="submit" value="logOut" name="logOut" class="btn btn-success">Log Out</button>
-            </form>
-                <form action="../board/mainBoard.php" method="post" role="form">
-                <button type="submit" value="mainBoard" class="btn btn-success">Main Board</button>
-            </form>
-            <br>
-            </center>
-            
-            
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        </div>
+if ($isSend) {
+    echo 'Wysłano';
+} elseif ($isError) {
+    echo 'za długi text';
+}
+
+?>
+<form action="" method="post" role="form">
+    <div class="form-group">
+        <label for="">Message</label>
+        <input type="text" class="form-control" name="message" id="message"
+               placeholder="Message max 140 signs">
     </div>
-</div>
-</body>
-</html>
 
+    <button type="submit" value="send" class="btn btn-success">Send</button>
+</form>           
 
+    <form action="../log/logOut.php" method="post" role="form">
+    <button type="submit" value="logOut" name="logOut" class="btn btn-success">Log Out</button>
+</form>
+    <form action="../board/mainBoard.php" method="post" role="form">
+    <button type="submit" value="mainBoard" class="btn btn-success">Main Board</button>
+</form>
+<br>
+</center>
 
-
+<?php
+require_once dirname(__FILE__) . "/../../html/htmlFooter.php";

@@ -17,106 +17,78 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['messageId'])
     $user = $_GET['user'];
 }
 
+$title = 'Twitter - Message';
+require_once dirname(__FILE__) . "/../../html/htmlHeader.php";
 ?>
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Twitter - Message</title>
-    <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container">
-    <div class="row">
-        
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            
-        </div>
-        
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <center>
-            <form action="../board/mainBoard.php" method="post" role="form">
-                <button type="submit" value="mainBoard" class="btn btn-success">Main Board</button>
-            </form>
-            <form action="../board/userBoard.php" method="post" role="form">
-                <button type="submit" value="userBoard" class="btn btn-success">User Board</button>
-            </form>
-                <form action="messagePage.php" method="post" role="form">
-                <button type="submit" value="messagePage" class="btn btn-success">Messages</button>
-            </form>
-            <form action="../log/logOut.php" method="post" role="form">
-                <button type="submit" value="logOut" name="logOut" class="btn btn-success">Log Out</button>
-            </form>
-            <br>
-            </center>
-            <?php
+<center>
+<form action="../board/mainBoard.php" method="post" role="form">
+    <button type="submit" value="mainBoard" class="btn btn-success">Main Board</button>
+</form>
+<form action="../board/userBoard.php" method="post" role="form">
+    <button type="submit" value="userBoard" class="btn btn-success">User Board</button>
+</form>
+    <form action="messagePage.php" method="post" role="form">
+    <button type="submit" value="messagePage" class="btn btn-success">Messages</button>
+</form>
+<form action="../log/logOut.php" method="post" role="form">
+    <button type="submit" value="logOut" name="logOut" class="btn btn-success">Log Out</button>
+</form>
+<br>
+</center>
+<?php
 
-            if ($isLogged) {
-                
-                $message = Message::loadMessageById($conn, $messageId);
-                
-                switch ($status) {
-                    case 'send':
-                       
-                        echo '<h4>Message sent: </h4>';
+if ($isLogged) {
 
-                        $messageReceiverId = $message ->getMessageReceiverId();
-                        $text = $message ->getText();
-                        $creationDate = $message ->getCreationDate();
+    $message = Message::loadMessageById($conn, $messageId);
 
-                        $loadeduser = Users::loadUserById($conn, $messageReceiverId);
-                        $usernameReceiver = $loadeduser ->getUsername();
-                        $_SESSION['getUserId'] = $messageReceiverId;
+    switch ($status) {
+        case 'send':
 
-                        echo "Receiver: $usernameReceiver<br>";
-                        echo "Creation date: $creationDate<br>";
-                        echo "Text: <a href=\"singleMessage.php?messageId=$messageId&status=send&user=$usernameReceiver\">$text</a><br><br>";                        
-                        break;
-                    
-                    case 'received':
-                        
-                        echo '<h4>Message received: </h4>';
+            echo '<h4>Message sent: </h4>';
 
-                        $messageSenderId = $message ->getMessageSenderId();
-                        $text = $message ->getText();
-                        $creationDate = $message ->getCreationDate();
-                        $isRead = $message ->setIsRead($conn, 1);
-                        $message ->saveToDB($conn);
+            $messageReceiverId = $message ->getMessageReceiverId();
+            $text = $message ->getText();
+            $creationDate = $message ->getCreationDate();
 
-                        $loadeduser = Users::loadUserById($conn, $messageSenderId);
-                        $usernameSender = $loadeduser ->getUsername();
-                        $_SESSION['getUserId'] = $messageSenderId;
+            $loadeduser = Users::loadUserById($conn, $messageReceiverId);
+            $usernameReceiver = $loadeduser ->getUsername();
+            $_SESSION['getUserId'] = $messageReceiverId;
 
-                        echo "Sender: $usernameSender<br>";
-                        echo "Creation date: $creationDate<br>";
-                        echo "Text: <a href=\"singleMessage.php?messageId=$messageId&status=received&user=$usernameSender\">$text</a><br><br>";
+            echo "Receiver: $usernameReceiver<br>";
+            echo "Creation date: $creationDate<br>";
+            echo "Text: <a href=\"singleMessage.php?messageId=$messageId&status=send&user=$usernameReceiver\">$text</a><br><br>";                        
+            break;
 
-                        break;
-                }
-            }
+        case 'received':
 
-            ?>
-            
-                    <form action="sendMessage.php" method="post" role="form">
-                        <div class="form-group">
-                         <button type="submit" value="reply">Reply</button>
-                        </div>                 
-                    </form>
-            <?php
-          
-            $conn->close();
-            $conn = null;                        
-            ?>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        </div>
-    </div>
-</div>
-</body>
-</html>
+            echo '<h4>Message received: </h4>';
 
+            $messageSenderId = $message ->getMessageSenderId();
+            $text = $message ->getText();
+            $creationDate = $message ->getCreationDate();
+            $isRead = $message ->setIsRead($conn, 1);
+            $message ->saveToDB($conn);
 
+            $loadeduser = Users::loadUserById($conn, $messageSenderId);
+            $usernameSender = $loadeduser ->getUsername();
+            $_SESSION['getUserId'] = $messageSenderId;
+
+            echo "Sender: $usernameSender<br>";
+            echo "Creation date: $creationDate<br>";
+            echo "Text: <a href=\"singleMessage.php?messageId=$messageId&status=received&user=$usernameSender\">$text</a><br><br>";
+
+            break;
+    }
+}
+
+?>
+
+<form action="sendMessage.php" method="post" role="form">
+    <div class="form-group">
+     <button type="submit" value="reply">Reply</button>
+    </div>                 
+</form>
+
+<?php
+require_once dirname(__FILE__) . "/../../html/htmlFooter.php";

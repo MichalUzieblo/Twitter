@@ -48,70 +48,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])
     $badPass = 'noData';
 
 } 
-
+$title = 'Twitter - Log In';
+require_once dirname(__FILE__) . "/../../html/htmlHeader.php";
+?>
+      
+<?php
+if (!empty($badPass)) {                
+    switch ($badPass) {
+        case 'wrongPass':
+            echo '<h3>Nieprawidłowe haslo</h3>';
+            break;
+        case 'wrongEmail':
+            echo '<h3>Nieprawidłowy email</h3>';
+            break;
+        case 'completeData':
+            echo '<h3>Niepodano wszystkich danych</h3>';
+            break;
+        case 'noData':
+            echo '<h3>Podaj dane do logowania</h3>';
+            break;                   
+    }
+}  
 ?>
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Twitter - Log In </title>
-    <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            
-            <?php
-            if (!empty($badPass)) {                
-                switch ($badPass) {
-                    case 'wrongPass':
-                        echo '<h3>Nieprawidłowe haslo</h3>';
-                        break;
-                    case 'wrongEmail':
-                        echo '<h3>Nieprawidłowy email</h3>';
-                        break;
-                    case 'completeData':
-                        echo '<h3>Niepodano wszystkich danych</h3>';
-                        break;
-                    case 'noData':
-                        echo '<h3>Podaj dane do logowania</h3>';
-                        break;                   
-                }
-            }  
-            
-            $conn->close();
-            $conn = null;
-            ?>
-            
-            <form action="" method="post" role="form">
-                <legend>Log in</legend>
-                <div class="form-group">
-                    <label for="">E-mail</label>
-                    <input type="email" class="form-control" name="email" id="email"
-                           placeholder="email@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="">Password</label>
-                    <input type="password" class="form-control" name="password" id="email"
-                           placeholder="Password">
-                </div>
-                <button type="submit" value="logInn" class="btn btn-success">Log in</button>
-                <button type="submit" value="newUser" name="register" class="btn btn-success">Register</button>
-                <button type="submit" value="mainPage" name="mainPage" class="btn btn-success">Main Page</button>
-            </form>
-            
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        </div>
+<form action="" method="post" role="form">
+    <legend>Log in</legend>
+    <div class="form-group">
+        <label for="">E-mail</label>
+        <input type="email" class="form-control" name="email" id="email"
+               placeholder="email@email.com">
     </div>
-</div>
-</body>
-</html>
-
+    <div class="form-group">
+        <label for="">Password</label>
+        <input type="password" class="form-control" name="password" id="email"
+               placeholder="Password">
+    </div>
+    <button type="submit" value="logInn" class="btn btn-success">Log in</button>
+    <button type="submit" value="newUser" name="register" class="btn btn-success">Register</button>
+    <button type="submit" value="mainPage" name="mainPage" class="btn btn-success">Main Page</button>
+</form>
+            
+<?php
+require_once dirname(__FILE__) . "/../../html/htmlFooter.php";

@@ -31,10 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteUser'])) {
     } 
 } 
 
-$conn->close();
-$conn = null;
-
-
+$title = 'Twitter - Delete User';
+require_once dirname(__FILE__) . "/../../html/htmlHeader.php";
 ?>
 
 <!doctype html>
@@ -59,11 +57,5 @@ $conn = null;
                 <button type="submit" value="no" name="deleteUser" class="btn btn-success">No</button>  
             </form>
             
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-        </div>
-    </div>
-</div>
-</body>
-</html>
-
+<?php
+require_once dirname(__FILE__) . "/../../html/htmlFooter.php";
