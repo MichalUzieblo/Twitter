@@ -4,9 +4,6 @@ ob_start();
 
 require_once dirname(__FILE__) . "/../connection/connect.php";
 require_once dirname(__FILE__) . "/../../classes/Users.php";
-var_dump($_POST);
-var_dump($_SESSION);
-
 
 $isLogged = FALSE;
 
